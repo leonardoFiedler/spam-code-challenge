@@ -1,3 +1,4 @@
 resources/*
 spam-code-challenge-env/*
 annotations.txt
+.DS_Store
