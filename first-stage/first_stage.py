@@ -7,7 +7,7 @@ from wordcloud import WordCloud
 PATH_OUTPUT = 'output/'
 
 #Array of columns that are not words
-LABEL_COLUMN_IGNORE = ['Full_Text', 'Common_Word_Count', 'Word_Count', 'Date', 'IsSpam']
+LABEL_COLUMN_IGNORE = ['Full_Text', 'Common_Word_Count', 'Word_Count', 'Date', 'IsSpam', 'Year', 'Month', 'Day']
 
 '''
 Formats the content o dataframe.
@@ -18,6 +18,12 @@ def format_content(df):
     # Replace 'yes' and 'no' to 1 and 0
     df.loc[df.IsSpam == 'yes', 'IsSpam'] = 1
     df.loc[df.IsSpam == 'no', 'IsSpam'] = 0
+
+    #Generates columns to day month and year
+    df['Year'] = pd.DatetimeIndex(df['Date']).year
+    df['Month'] = pd.DatetimeIndex(df['Date']).month
+    df['Day'] = pd.DatetimeIndex(df['Date']).day
+
     return df
 
 '''
@@ -62,7 +68,7 @@ Plots the data into a bar graph
 label_words = label of all words in an array
 total_words = sum of all words in an array
 '''
-def plot_graph_bar(label_words, total_words):
+def plot_graph_bar(label_words, total_words, file_name='graph_bar'):
     index = np.arange(len(label_words))
     plt.figure(figsize=(80,30))
     bars = plt.bar(index, total_words, align='center', width=0.5)
@@ -76,12 +82,15 @@ def plot_graph_bar(label_words, total_words):
         plt.text(bar.get_x(), val + .002, val)
 
     #TODO: Don't fix / for file path
-    filename = '{0}/{1}.png'.format(PATH_OUTPUT, 'graph_bar')
-    plt.savefig(filename)
+    file_name = '{0}/{1}.png'.format(PATH_OUTPUT, file_name)
+    plt.savefig(file_name)
 
 
 '''
 Generates a wordcloud of all words
+
+label_words = label of all words in an array
+total_words = sum of all words in an array
 '''
 def generate_wordcloud(label_words, total_words):
     #Generates a dict from label and total words. The dict must be: ('word', Number o occurences)
@@ -93,6 +102,48 @@ def generate_wordcloud(label_words, total_words):
     filename = '{0}/{1}.png'.format(PATH_OUTPUT, 'wordcloud')
     wordcloud.to_file(filename)
 
+'''
+Get the quantity of messages for a specific month
+
+'''
+def get_messages_sum_of_month(df, month=1, is_spam=False):
+    data = df[(df.IsSpam == is_spam) & (df.Month == month)]
+    return data
+
+'''
+Generates the graph bar of messages of a specific month, with spam or common messages.
+
+
+'''
+def plot_graph_messages_of_month(df, label_words, month=1, is_spam=False):
+    data = get_messages_sum_of_month(df, month, is_spam)
+
+    if (len(data) > 0):
+        total_words = data[label_words].sum()
+        file_name = 'month_{0}_report_{1}_messages'.format(month, 'spam' if is_spam else 'common')
+        plot_graph_bar(label_words, total_words, file_name)
+    else:
+        print("Ignoring month:{0} with is_spam={1} beacause it is empty.".format(month, is_spam))
+
+'''
+Generate graph for all months.
+
+'''
+def generate_graph_for_all_months(df, label_words, is_spam=False):
+    for month in range(1, 13):
+        plot_graph_messages_of_month(df, label_words, month, is_spam)
+
+'''
+Generate graph for all month - spam and common messages
+'''
+def generate_graph_for_all_spam_common_months(df, label_words):
+    for spam in [True, False]:
+        generate_graph_for_all_months(df, label_words, spam)
+
+def print_statistical_data(df, label_words):
+
+    pass
+
 # Main
 if __name__ == "__main__":
     # Read csv file =with encoding unicode_escape - this encode was used due to troubles with special characters.
@@ -100,15 +151,33 @@ if __name__ == "__main__":
     df = format_content(df)
     label_words = get_words_label(df)
 
-    total_words = df[label_words].sum()
-    top_10_words = get_top_words(total_words, ascending=False)
-    print(top_10_words)
+    # Question 01
+
+    # total_words = df[label_words].sum()
+    # top_10_words = get_top_words(total_words, ascending=False)
+    # print(top_10_words)
 
     # Generate bar graph
-    plot_graph_bar(label_words, total_words)
+    # plot_graph_bar(label_words, total_words)
 
     # Generate wordcloud
-    generate_wordcloud(label_words, total_words)
+    # generate_wordcloud(label_words, total_words)
+
+    #
+    # Question 02
+    #
+
+    # print(df[['Date', 'IsSpam']])
+    # plot_graph_messages_of_month(df, label_words, is_spam=False, month=2)
+    # generate_graph_for_all_spam_common_months(df, label_words)
+
+    #
+    # Question 03
+    #
+    print_statistical_data(df, label_words)
+
+    # Question 04
+    
 
 # Mean of each word
 # print("Mean")
