@@ -2,3 +2,5 @@ resources/*
 spam-code-challenge-env/*
 annotations.txt
 .DS_Store
+first-stage/output/*
+.vscode/*

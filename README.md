@@ -1,6 +1,6 @@
 ## Spam Code Challenge
 
-This project consists in a spam analyzer based on a CVS entry. The development is all based on Python 3.
+This project consists in a spam analyzer based on a CSV entry. The development is all based on Python 3.
 
 ## Setup Environment
 
@@ -21,3 +21,7 @@ source spam-code-challenge-env/bin/activate
 ## Install All Dependencies
 
 pip install -r requirements.txt
+
+### Setup data Folder with CSV
+
+To setup data folder, you should create one folder called "resources" at root project folder. Inside resources folder, you should put the file with name "data.csv".
