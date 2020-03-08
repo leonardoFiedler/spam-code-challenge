@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
+#TODO: Review Year parameter (optional)
+
 # Path to output data
 PATH_OUTPUT = 'output/'
 
@@ -140,9 +142,30 @@ def generate_graph_for_all_spam_common_months(df, label_words):
     for spam in [True, False]:
         generate_graph_for_all_months(df, label_words, spam)
 
-def print_statistical_data(df, label_words):
+'''
+Print statical data (Max, min, mean, median, std and variance) based on specific month.
+'''
+def print_statistical_data_month(df, label_words, month=1):
+    data = df[df.Month == month]
+    if (len(data) > 0):
+        print("---------------------------------------")
+        print("Max: {0}".format(data.Word_Count.max()))
+        print("Min: {0}".format(data.Word_Count.min()))
+        print("Mean: {0}".format(data.Word_Count.mean()))
+        print("Median: {0}".format(data.Word_Count.median()))
+        print("STD: {0}".format(data.Word_Count.std()))
+        print("Variance: {0}".format(data.Word_Count.var()))
+        print("---------------------------------------")
+    else:
+        print("Ignoring month:{0} beacause it is empty.".format(month))
 
-    pass
+'''
+Print statical data (Max, min, mean, median, std and variance) of all month's
+
+'''
+def print_statistical_data_all_month(df, label_words):
+    for month in range(1, 13):
+        print_statistical_data_month(df, label_words, month)
 
 # Main
 if __name__ == "__main__":
@@ -174,10 +197,10 @@ if __name__ == "__main__":
     #
     # Question 03
     #
-    print_statistical_data(df, label_words)
+    print_statistical_data_all_month(df, label_words)
 
     # Question 04
-    
+
 
 # Mean of each word
 # print("Mean")
