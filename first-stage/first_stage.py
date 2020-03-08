@@ -149,6 +149,7 @@ def print_statistical_data_month(df, label_words, month=1):
     data = df[df.Month == month]
     if (len(data) > 0):
         print("---------------------------------------")
+        print("Month: {0}".format(month))
         print("Max: {0}".format(data.Word_Count.max()))
         print("Min: {0}".format(data.Word_Count.min()))
         print("Mean: {0}".format(data.Word_Count.mean()))
@@ -166,6 +167,49 @@ Print statical data (Max, min, mean, median, std and variance) of all month's
 def print_statistical_data_all_month(df, label_words):
     for month in range(1, 13):
         print_statistical_data_month(df, label_words, month)
+
+
+'''
+Get the sequence which has the most sequence of common messages of a specific month.
+
+'''
+def get_day_of_month_sequence_common_message(df, label_words, month=1):
+    data = df[df.Month == month]
+
+    if (len(data) <= 0):
+        print("Ignoring month:{0} beacause it is empty.".format(month))
+        return
+
+    min_day = data.Day.min()
+    max_day = data.Day.max()
+
+    max_value = 0
+    max_value_day = 0
+
+    for day in range(min_day, max_day + 1):
+        data_day = data[data.Day == day]
+
+        sequence = 0
+        for _, row in data_day.iterrows():
+            if (row.IsSpam == False):
+                sequence += 1
+            else:
+                if (sequence > max_value):
+                    max_value = sequence
+                    max_value_day = day
+                    sequence = 0
+                else:
+                    sequence = 0
+        
+    print("Most sequence without spam messages is: {0} of month {1} and day {2}.".format(max_value, month, max_value_day))
+
+'''
+Get the sequence which has the most sequence of common messages of all months.
+
+'''
+def get_day_of_month_sequence_common_message_all(df, label_words):
+    for month in range(1, 13):
+        get_day_of_month_sequence_common_message(df, label_words, month)
 
 # Main
 if __name__ == "__main__":
@@ -197,10 +241,11 @@ if __name__ == "__main__":
     #
     # Question 03
     #
-    print_statistical_data_all_month(df, label_words)
+    # print_statistical_data_all_month(df, label_words)
 
     # Question 04
-
+    # get_day_of_month_sequence_common_message(df, label_words, month=3)
+    get_day_of_month_sequence_common_message_all(df, label_words)
 
 # Mean of each word
 # print("Mean")
