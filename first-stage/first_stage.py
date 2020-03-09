@@ -1,9 +1,9 @@
+from argparse import ArgumentParser
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
-
-#TODO: Review Year parameter (optional)
+import sys
 
 # Path to output data
 PATH_OUTPUT = 'output/'
@@ -83,10 +83,10 @@ def plot_graph_bar(label_words, total_words, file_name='graph_bar'):
         val = bar.get_height()
         plt.text(bar.get_x(), val + .002, val)
 
-    #TODO: Don't fix / for file path
-    file_name = '{0}/{1}.png'.format(PATH_OUTPUT, file_name)
-    plt.savefig(file_name)
-
+    
+    # file_name = '{0}/{1}.png'.format(PATH_OUTPUT, file_name)
+    # plt.savefig(file_name)
+    plt.show()
 
 '''
 Generates a wordcloud of all words
@@ -101,8 +101,13 @@ def generate_wordcloud(label_words, total_words):
     wordcloud = WordCloud(background_color='white', 
     width=1600, 
     height=800).generate_from_frequencies(word_dict)
-    filename = '{0}/{1}.png'.format(PATH_OUTPUT, 'wordcloud')
-    wordcloud.to_file(filename)
+    # filename = '{0}/{1}.png'.format(PATH_OUTPUT, 'wordcloud')
+    # wordcloud.to_file(filename)
+    plt.figure(figsize = (8, 8), facecolor = None)
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    plt.tight_layout(pad = 0)
+    plt.show()
 
 '''
 Get the quantity of messages for a specific month
@@ -137,10 +142,12 @@ def generate_graph_for_all_months(df, label_words, is_spam=False):
 
 '''
 Generate graph for all month - spam and common messages
+
 '''
 def generate_graph_for_all_spam_common_months(df, label_words):
-    for spam in [True, False]:
-        generate_graph_for_all_months(df, label_words, spam)
+    data = df.groupby(['Month', 'IsSpam'])['Month', 'IsSpam']
+    data.size().unstack().plot.bar()
+    plt.show()
 
 '''
 Print statical data (Max, min, mean, median, std and variance) based on specific month.
@@ -148,7 +155,6 @@ Print statical data (Max, min, mean, median, std and variance) based on specific
 def print_statistical_data_month(df, label_words, month=1):
     data = df[df.Month == month]
     if (len(data) > 0):
-        print("---------------------------------------")
         print("Month: {0}".format(month))
         print("Max: {0}".format(data.Word_Count.max()))
         print("Min: {0}".format(data.Word_Count.min()))
@@ -156,7 +162,7 @@ def print_statistical_data_month(df, label_words, month=1):
         print("Median: {0}".format(data.Word_Count.median()))
         print("STD: {0}".format(data.Word_Count.std()))
         print("Variance: {0}".format(data.Word_Count.var()))
-        print("---------------------------------------")
+        print("\n")
     else:
         print("Ignoring month:{0} beacause it is empty.".format(month))
 
@@ -211,15 +217,52 @@ def get_day_of_month_sequence_common_message_all(df, label_words):
     for month in range(1, 13):
         get_day_of_month_sequence_common_message(df, label_words, month)
 
-# Main
-if __name__ == "__main__":
+def parse_args():
+    ap = ArgumentParser()
+
+    ap.add_argument(
+        '--o',
+        '-option',
+        required=True,
+        type=int,
+        help='Should be an option based on the question number. \n 1) Show graph most frequency words \n 2) Show Wordcloud most frequency words 3) Show quantity message common and spam per month 4) Show statistical data (max, min, mean, median, std, variance and total words for each month) 5) Show day with more sequence of commom messages'
+    )
+
+    return ap.parse_args()
+
+def main(args):
     # Read csv file =with encoding unicode_escape - this encode was used due to troubles with special characters.
     df = pd.read_csv('../resources/data.csv', encoding='unicode_escape')
     df = format_content(df)
     label_words = get_words_label(df)
+    total_words = df[label_words].sum()
 
+    # Show graph most frequency words
+    if args.o == 1:
+        plot_graph_bar(label_words, total_words)
+
+    # Show Wordcloud most frequency words
+    elif args.o == 2:
+        generate_wordcloud(label_words, total_words)
+
+    # Show quantity message common and spam per month
+    elif args.o == 3:
+        generate_graph_for_all_spam_common_months(df, label_words)
+
+    # Show statistical data (max, min, mean, median, std, variance and total words for each month)
+    elif args.o == 4:
+        print_statistical_data_all_month(df, label_words)
+
+    # Show day with more sequence of commom messages
+    elif args.o == 5:
+        get_day_of_month_sequence_common_message_all(df, label_words)
+    
+    else:
+        raise Exception("None of accepted options were inserted. Values of range [1-5] only accepted.")
+    
+# Main
+if __name__ == "__main__":
     # Question 01
-
     # total_words = df[label_words].sum()
     # top_10_words = get_top_words(total_words, ascending=False)
     # print(top_10_words)
@@ -245,7 +288,10 @@ if __name__ == "__main__":
 
     # Question 04
     # get_day_of_month_sequence_common_message(df, label_words, month=3)
-    get_day_of_month_sequence_common_message_all(df, label_words)
+    # get_day_of_month_sequence_common_message_all(df, label_words)
+    args = parse_args()
+    main(args)
+    sys.exit(0)
 
 # Mean of each word
 # print("Mean")
