@@ -12,7 +12,7 @@ This stage is focused on data analysis and data visualization. The main purpose 
 
 ### Command
 
-To execute this file, you can run with the following command: python run first_stage.py.
+To execute this file, you can run with the following command: python first_stage.py.
 
 ### Parameters
 
