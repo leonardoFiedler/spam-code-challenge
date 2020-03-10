@@ -38,14 +38,15 @@ def get_words_label(df):
 '''
 
 '''
-def print_results_classifier(algorithm_name, val_y, val_predictions):
+def print_results_classifier(algorithm_name, val_y, val_predictions, n_digits=2):
     print(algorithm_name)
-    print("Mean absolute error: {0}".format(mean_absolute_error(val_y, val_predictions)))
-    print("Accuracy score: {0}".format(accuracy_score(val_y, val_predictions)))
+    print("Mean absolute error: {0}".format(round(mean_absolute_error(val_y, val_predictions), n_digits)))
+    print("Accuracy score: {0}".format(round(accuracy_score(val_y, val_predictions), n_digits)))
     print("Confusion matrix: {0}".format(confusion_matrix(val_y, val_predictions)))
-    print("Precision score: {0}".format(precision_score(val_y, val_predictions)))
-    print("Recal score: {0}".format(recall_score(val_y, val_predictions)))
-    print("F1 score: {0}".format(f1_score(val_y, val_predictions)))
+    print("Precision score: {0}".format(round(precision_score(val_y, val_predictions), n_digits)))
+    print("Recal score: {0}".format(round(recall_score(val_y, val_predictions), n_digits)))
+    print("F1 score: {0}".format(round(f1_score(val_y, val_predictions), n_digits)))
+    print("\n")
 
 '''
 
