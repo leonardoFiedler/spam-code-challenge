@@ -6,7 +6,7 @@ The purpose of this exercise is to classify data automatically into spam and com
 To solve this, it was used 2 algorithms: 
 
 1. [Random Forest][random_forest_link]
-2. [Decision Tree][decision_tree_link].
+2. [Decision Tree][decision_tree_link]
 
 [random_forest_link]: https://towardsdatascience.com/understanding-random-forest-58381e0602d2
 [decision_tree_link]: https://towardsdatascience.com/decision-tree-in-machine-learning-e380942a4c96
