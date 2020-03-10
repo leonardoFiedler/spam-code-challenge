@@ -10,7 +10,7 @@ To solve this, it was used 2 algorithms:
 
 ### Command
 
-To execute this file, you can run with the following command: python run second_stage.py.
+To execute this file, you can run with the following command: python second_stage.py.
 
 ### Parameters
 
