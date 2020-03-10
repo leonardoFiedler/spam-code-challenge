@@ -19,7 +19,12 @@ To execute this file, you can run with the following command: python second_stag
 
 |Parameter      |Meaning      |Accepted Values      |Required |
 |---------------|-------------|---------------------|---------|
-|algorithm (-a) |Number of algorithm listed above or 3 for both|[1-3]|True
+|option (-o)    |Number of algorithm listed above or 3 for both|[1-2]|False
+|all (-a)       |Execute all algorithms|-|False
+
+#### Attention
+
+At least one parameter should be picked!
 
 ### Output
 
