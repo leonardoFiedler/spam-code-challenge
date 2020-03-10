@@ -1,6 +1,6 @@
 ## Spam Code Challenge
 
-This project consists in a spam analyzer based on a CSV entry. The development is all based on Python 3.
+This project consists in a spam analyzer based on a CSV entry. The development is all based on Python 3.7.4
 
 ## Setup Environment
 
